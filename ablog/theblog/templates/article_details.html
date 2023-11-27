@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{ post.title_tag }} {% endblock %}
+
+{% block content %}
+
+<h1>{{ post.title }}</h1>
+<small>От:
+    {{ post.author.first_name }}
+    {{ post.author.last_name }} -
+    {{ post.post_date }}
+
+    {% if user.is_authenticated %}
+    {% if user.id == post.author.id %}
+    <a href="{% url 'update_post' post.pk %}"> (Изменить) </a>
+    <a href="{% url 'delete_post' post.pk %}"> (Удалить) </a>
+    {% endif %}
+    {% endif %}
+</small><br>
+<hr>
+<br>
+
+{% if post.header_image %}
+<img src="{{ post.header_image.url }}" width="400px">
+{% endif %}
+<br><br>
+{{ post.body|safe }}
+
+<hr>
+<br>
+<form action="{% url 'like_post' post.pk %}" method="POST">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+    {% if liked %}
+    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger btn-sm">Не нравится</button>
+    - {{ total_likes }} Likes
+    {% else %}
+    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">Нравится</button>
+    - {{ total_likes }} Likes
+    {% endif %}
+    {% else %}
+    <small><a href="{% url 'login' %}">Войдите</a> , чтобы поставить лайк</small>
+    {% endif %}
+</form>
+<br>
+
+
+<!--<form action="" method="POST">-->
+<!--    {% csrf_token %}-->
+<!--    {% if user.is_authenticated %}-->
+<!--    {% if subscribed %}-->
+<!--    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger btn-sm">Подписаться</button>-->
+<!--    - {{ total_likes }} Likes-->
+<!--    {% else %}-->
+<!--    <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">Отписаться</button>-->
+<!--    - {{ total_likes }} подписчиков-->
+<!--    {% endif %}-->
+<!--    {% else %}-->
+<!--    <small><a href="{% url 'login' %}">Войдите</a> , чтобы подписаться</small>-->
+<!--    {% endif %}-->
+<!--</form>-->
+
+<br>
+<button type="submit" name="reports" class="btn btn-black btn-sm"><a href="{% url 'add_reports' post.pk %}">
+    Пожаловаться</a></button>
+<br>
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-2">
+            {% if post.author.profile.profile_pic%}
+            <img src="{{ post.author.profile.profile_pic.url }}" class="img-fluid rounded-start" alt="foto_profile">
+            {% else %}
+            <img src="{% static 'theblog/images/programmer.png' %}" class="img-fluid rounded-start" alt="foto_profile">
+            {% endif %}
+
+        </div>
+
+        <div class="col-md-10">
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    {{ post.author.first_name }}
+                    {{ post.author.last_name }}
+                </h5>
+
+                <p class="small text-muted">
+                    <a href="{% url 'show_profile_page' post.author.profile.id %}">Профиль пользователя</a>
+                    | {% if post.author.profile.telegram_url %}
+                    <a href="{{ post.author.profile.telegram_url }}">Telegram</a>
+                    {% endif %}
+                </p>
+
+                <p class="card-text">{{ post.author.profile.bio }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br>
+<hr>
+<h2>Комментарии</h2>
+<br>
+{% if not post.comments.all %}
+Комментариев пока что нету. <a href="{% url 'add_comment' post.pk %}">Добавь свой</a>
+<br><br>
+{% else %}
+<br>
+{% for comment in post.comments.all %}
+<strong>
+    {{ comment.name }} -
+    {{ comment.date_added }}
+</strong>
+<br>
+{{ comment.body }}
+<br><br>
+<hr>
+
+{% endfor %}
+<a href="{% url 'add_comment' post.pk %}">Добавить комментарий</a>
+
+{% endif %}
+
+<br><br>
+
+{% endblock %}

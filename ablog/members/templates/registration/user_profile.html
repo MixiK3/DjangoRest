@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Профиль пользователя</h1>
+<br>
+<p>Ты посетил эту страницу {{ num_visits }} раз.</p>
+
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-2">
+            {% if page_user.profile_pic %}
+            <img src="{{ page_user.profile_pic.url }}" class="img-fluid rounded-start" alt="foto_profile">
+            {% else %}
+            <img src="{% static 'theblog/images/programmer.png' %}" class="img-fluid rounded-start" alt="foto_profile">
+            {% endif %}
+        </div>
+        <div class="col-md-10">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {{ page_user.user.first_name }}
+                    {{ page_user.user.last_name }}
+                </h5>
+
+                <p class="small text-muted">
+                    {% if page_user.telegram_url %}
+                    <a href="{{ page_user.telegram_url }}">Telegram</a>
+                    {% endif %}
+                </p>
+
+                <p class="card-text">{{ page_user.bio }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

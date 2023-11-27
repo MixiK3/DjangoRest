@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %} Войти {% endblock %}
+
+{% block content %}
+<h1>Войдите в аккаунт</h1>
+<br><br>
+<div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Имя пользователя</label>
+            <input type="text" class="form-control" name="username"
+                   placeholder="Введите имя пользователя">
+        </div>
+        <br>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" class="form-control" name="password"
+                   placeholder="Введите пароль">
+        </div>
+    <br>
+
+    <button class="btn btn-secondary">Войти</button>
+
+    <br> <br>
+    <small id="" class="form-text text-mutted">Еще не зарегистрированы? <a
+            href="{% url 'register' %}">Зарегистрируйтесь</a>
+    </small>
+
+</div>
+
+
+{% endblock %}

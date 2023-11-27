@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %} Изменение поста {% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+{% if user.id == post.author.id %}
+<h1>Изменение поста</h1>
+<br><br>
+<div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        <button class="btn btn-secondary">Изменить</button>
+    </form>
+</div>
+{% else %}
+Ты не можешь сделать это.
+{% endif %}
+{% else %}
+Ты не можешь сделать это.
+{% endif %}
+
+{% endblock %}

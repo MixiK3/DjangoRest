@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Записи</h1>
+
+<ul>
+
+    {% for post in object_list %}
+
+    <li><a href="{% url 'article-detail' post.pk %}"> {{ post.title }}</a>
+        - <a href="{% url 'category' post.category|slugify %}"> {{ post.category }}</a>
+        - {{ post.type_of_articles }}
+        - {{ post.author.first_name }}
+        {{ post.author.last_name }} - {{ post.post_date }}
+        <small>
+            {% if user.is_authenticated %}
+            {% if user.id == post.author.id %}
+            - <a href="{% url 'update_post' post.pk %}"> (Изменить) </a>
+            <a href="{% url 'delete_post' post.pk %}"> (Удалить) </a>
+            {% endif %}
+            {% endif %}
+        </small> <br>
+        {{ post.snippet }}
+        {{ post.body|slice:":100"|safe }}
+    </li>
+    {% endfor %}
+
+
+</ul>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if posts.has_previous %}
+            <a href="?page=1">&laquo; первая</a>
+            <a href="?page={{ posts.previous_page_number }}">предыдущая</a>
+        {% endif %}
+
+        <span class="current-page">{{ posts.number }}</span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}">следующая</a>
+            <a href="?page={{ posts.paginator.num_pages }}">последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
+
+
